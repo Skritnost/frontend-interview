@@ -1,44 +1,30 @@
-import { useState, useEffect } from 'react'
-import type { TodoList } from './types/api'
-import { getTodoLists } from './api/todoLists'
-import CreateTodoList from './components/CreateTodoList'
-import TodoListCard from './components/TodoListCard'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Layout from './components/layout/Layout'
+import HomePage from './pages/HomePage'
+import TodoListPage from './pages/TodoListPage'
 
 function App() {
-  const [lists, setLists] = useState<TodoList[]>([])
-
-  useEffect(() => {
-    getTodoLists().then(setLists)
-  }, [])
-
-  const handleCreated = (list: TodoList) => {
-    setLists(prev => [...prev, list])
-  }
-
-  const handleDeleted = (listId: number) => {
-    setLists(prev => prev.filter(l => l.id !== listId))
-  }
-
-  const handleUpdated = (updated: TodoList) => {
-    setLists(prev => prev.map(l => l.id === updated.id ? updated : l))
-  }
-
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Todo Lists</h1>
-      <CreateTodoList lists={lists} onCreated={handleCreated} />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lists.map(list => (
-          <TodoListCard
-            key={list.id}
-            list={list}
-            onDeleted={handleDeleted}
-            onUpdated={handleUpdated}
-          />
-        ))}
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/todo-list" element={<TodoListPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
 export default App
+
+/**
+ * 1. CRUD completo de las listas
+ * 2. Mobile first adaptive approach
+ * 3. Drag and drop for check list items. Save in localstage the order
+ * 4. Light and Dark mode
+ * 5. Optimistic updates for everything
+ * 6. Cover with test something
+ * 7. Export conversation
+ */

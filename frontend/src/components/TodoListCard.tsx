@@ -14,9 +14,16 @@ export default function TodoListCard({ list, onDeleted, onUpdated }: Props) {
   const handleAddItem = async () => {
     const trimmed = itemName.trim()
     if (!trimmed) return
-    const item = await addTodoItem(list.id, { name: trimmed })
-    onUpdated({ ...list, todoItems: [...list.todoItems, item] })
-    setItemName('')
+
+    try {
+      const item = await addTodoItem(list.id, { name: trimmed })
+
+        onUpdated({ ...list, todoItems: [...list.todoItems, item] })
+      setItemName('')
+    } catch (e) {
+
+    }
+
   }
 
   const handleToggleItem = async (item: TodoItem) => {
