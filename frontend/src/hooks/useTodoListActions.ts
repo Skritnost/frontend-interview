@@ -88,6 +88,12 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
     }
   }
 
+  const handleUpdateItemName = async (itemId: number, name: string) => {
+    const updated = await updateTodoItem(listRef.current.id, itemId, { name })
+    const latest = listRef.current
+    emitUpdate({ ...latest, todoItems: latest.todoItems.map(i => (i.id === itemId ? updated : i)) })
+  }
+
   const handleDeleteList = async () => {
     try {
       const listId = listRef.current.id
@@ -107,6 +113,7 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
     handleAddItem,
     handleToggleItem,
     handleDeleteItem,
+    handleUpdateItemName,
     handleDeleteList,
   }
 }

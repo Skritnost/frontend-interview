@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { ArrowRight, Plus, Trash2, GripVertical } from 'lucide-react'
 import {
   DndContext,
@@ -28,11 +29,13 @@ function SortableChecklistItem({
   item,
   onToggle,
   onDelete,
+  onUpdateName,
   dragActive,
 }: {
   item: TodoItem
   onToggle: () => void
   onDelete: () => void
+  onUpdateName: (name: string) => Promise<void>
   dragActive: boolean
 }) {
   const {
@@ -66,7 +69,7 @@ function SortableChecklistItem({
       >
         <GripVertical className="w-4 h-4 text-gray-300" />
       </button>
-      <ChecklistItem item={item} onToggle={onToggle} onDelete={onDelete} />
+      <ChecklistItem item={item} onToggle={onToggle} onDelete={onDelete} onUpdateName={onUpdateName} />
     </li>
   )
 }
@@ -158,16 +161,17 @@ export default function TodoListModal({
       return
     }
     setNameError('')
+    if (currentList && name.trim() === currentList.name) return
     setNameLoading(true)
     try {
       if (currentList) {
-        if (name.trim() === currentList.name) return
         const updated = await updateTodoList(currentList.id, {
           name: name.trim(),
         })
         const withItems = { ...updated, todoItems: currentList.todoItems }
         setCurrentList(withItems)
         onUpdated(withItems)
+        toast.success('List name updated')
       } else {
         const created = await createTodoList({ name: name.trim() })
         setCurrentList(created)
@@ -219,6 +223,11 @@ export default function TodoListModal({
             setNameError('')
           }}
           onSubmit={handleNameSubmit}
+          onBlur={() => {
+            if (currentList && name.trim() !== currentList.name) {
+              handleNameSubmit()
+            }
+          }}
           placeholder="Enter list name..."
           label="List Name"
           icon={<ArrowRight className="w-4 h-4" />}
@@ -236,6 +245,7 @@ export default function TodoListModal({
               label="Checklist Items"
               icon={<Plus className="w-4 h-4" />}
               loading={actions.itemLoading}
+              refocusAfterLoading
             />
 
             {orderedItems.length > 0 && (
@@ -257,6 +267,7 @@ export default function TodoListModal({
                         item={item}
                         onToggle={() => actions.handleToggleItem(item)}
                         onDelete={() => actions.handleDeleteItem(item.id)}
+                        onUpdateName={(name) => actions.handleUpdateItemName(item.id, name)}
                         dragActive={isDragging}
                       />
                     ))}

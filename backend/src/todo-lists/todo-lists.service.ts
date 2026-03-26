@@ -117,7 +117,7 @@ export class TodoListsService {
   private nextId(list: TodoList[] | TodoItem[]): number {
     const last = list
       .map((x: TodoItem | TodoList) => x.id)
-      .sort()
+      .sort((a, b) => a - b)
       .reverse()[0];
 
     return last ? last + 1 : 1;

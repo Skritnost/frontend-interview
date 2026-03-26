@@ -6,35 +6,39 @@ interface ActionInputProps {
   value: string
   onChange: (value: string) => void
   onSubmit: () => void
+  onBlur?: () => void
   placeholder?: string
   label?: string
   icon: ReactNode
   loading?: boolean
   disabled?: boolean
   error?: string
+  refocusAfterLoading?: boolean
 }
 
 export default function ActionInput({
   value,
   onChange,
   onSubmit,
+  onBlur,
   placeholder,
   label,
   icon,
   loading,
   disabled,
   error,
+  refocusAfterLoading,
 }: ActionInputProps) {
   const isDisabled = disabled || loading
   const inputRef = useRef<HTMLInputElement>(null)
   const wasLoading = useRef(false)
 
   useEffect(() => {
-    if (wasLoading.current && !loading) {
+    if (refocusAfterLoading && wasLoading.current && !loading) {
       inputRef.current?.focus()
     }
     wasLoading.current = !!loading
-  }, [loading])
+  }, [loading, refocusAfterLoading])
 
   return (
     <div>
@@ -43,7 +47,14 @@ export default function ActionInput({
           {label}
         </label>
       )}
-      <div className="flex items-center border-2 border-black rounded-full pl-4 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-black/20 transition-shadow">
+      <div
+        className="flex items-center border-2 border-black rounded-full pl-4 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-black/20 transition-shadow"
+        onBlur={(e) => {
+          if (onBlur && !e.currentTarget.contains(e.relatedTarget as Node)) {
+            onBlur()
+          }
+        }}
+      >
         <input
           ref={inputRef}
           type="text"
