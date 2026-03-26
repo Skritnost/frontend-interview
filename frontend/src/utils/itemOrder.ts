@@ -23,18 +23,15 @@ export function saveStoredOrder(listId: number, order: number[]) {
   localStorage.setItem(`${KEY_PREFIX}${listId}`, JSON.stringify(deduped))
 }
 
-export function removeItemFromOrder(listId: number, itemId: number) {
-  saveStoredOrder(listId, getStoredOrder(listId).filter(id => id !== itemId))
-}
-
 export function removeListOrder(listId: number) {
   localStorage.removeItem(`${KEY_PREFIX}${listId}`)
 }
 
 /**
- * Compute display order from items + stored order.
- * New items (not in stored order) go to the top.
- * If no stored order, defaults to unchecked-first / checked-second.
+ * Build display order from items + stored order.
+ * - Items in stored order keep their stored position.
+ * - Items not in stored order go to the top (newest first).
+ * - If no stored order: unchecked first, then checked.
  */
 export function computeDisplayOrder(items: TodoItem[], listId: number): TodoItem[] {
   const storedOrder = getStoredOrder(listId)
@@ -62,18 +59,18 @@ export function computeDisplayOrder(items: TodoItem[], listId: number): TodoItem
 }
 
 /**
- * Reorder items after a toggle (check/uncheck).
- * Moves the toggled item to the boundary between unchecked and checked sections.
+ * Insert item at the boundary between unchecked and checked sections.
+ * - Checked item → top of checked section (right at the boundary).
+ * - Unchecked item → bottom of unchecked section (right at the boundary).
  */
-export function reorderOnToggle(
-  currentOrdered: TodoItem[],
-  toggledItem: TodoItem,
+export function insertAtBoundary(
+  items: TodoItem[],
+  item: TodoItem,
 ): TodoItem[] {
-  const without = currentOrdered.filter(i => i.id !== toggledItem.id)
+  const without = items.filter(i => i.id !== item.id)
   const firstCheckedIdx = without.findIndex(i => i.done)
   const insertIdx = firstCheckedIdx === -1 ? without.length : firstCheckedIdx
-
   const result = [...without]
-  result.splice(insertIdx, 0, toggledItem)
+  result.splice(insertIdx, 0, item)
   return result
 }

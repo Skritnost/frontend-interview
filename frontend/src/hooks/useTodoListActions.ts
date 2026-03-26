@@ -3,10 +3,9 @@ import type { TodoList, TodoItem } from '../types/api'
 import { addTodoItem, updateTodoItem, deleteTodoItem, deleteTodoList } from '../api/todoLists'
 import {
   computeDisplayOrder,
-  reorderOnToggle,
+  insertAtBoundary,
   getStoredOrder,
   saveStoredOrder,
-  removeItemFromOrder,
   removeListOrder,
 } from '../utils/itemOrder'
 
@@ -27,6 +26,11 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
   const onDeletedRef = useRef(onDeleted)
   onDeletedRef.current = onDeleted
 
+  const emitUpdate = (updated: TodoList) => {
+    listRef.current = updated
+    onUpdatedRef.current(updated)
+  }
+
   const resetItemInput = () => {
     setItemName('')
     setItemLoading(false)
@@ -34,14 +38,18 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleAddItem = async () => {
     const trimmed = itemName.trim()
-    if (!trimmed || !listRef.current.id) return
+    const listId = listRef.current.id
+    if (!trimmed || !listId) return
     setItemLoading(true)
     try {
-      const currentList = listRef.current
-      const item = await addTodoItem(currentList.id, { name: trimmed })
-      const storedOrder = getStoredOrder(currentList.id)
-      saveStoredOrder(currentList.id, [item.id, ...storedOrder])
-      onUpdatedRef.current({ ...currentList, todoItems: [...currentList.todoItems, item] })
+      const item = await addTodoItem(listId, { name: trimmed })
+
+      const latest = listRef.current
+      const newItems = [...latest.todoItems, item]
+      const storedOrder = getStoredOrder(latest.id)
+      saveStoredOrder(latest.id, [item.id, ...storedOrder])
+
+      emitUpdate({ ...latest, todoItems: newItems })
       setItemName('')
     } catch {
       // API layer throws on failure
@@ -52,13 +60,15 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleToggleItem = async (item: TodoItem) => {
     try {
-      const currentList = listRef.current
-      const updated = await updateTodoItem(currentList.id, item.id, { done: !item.done })
-      const updatedItems = currentList.todoItems.map(i => (i.id === item.id ? updated : i))
-      const currentOrdered = computeDisplayOrder(updatedItems, currentList.id)
-      const newOrdered = reorderOnToggle(currentOrdered, updated)
-      saveStoredOrder(currentList.id, newOrdered.map(i => i.id))
-      onUpdatedRef.current({ ...currentList, todoItems: updatedItems })
+      const updated = await updateTodoItem(listRef.current.id, item.id, { done: !item.done })
+
+      const latest = listRef.current
+      const updatedItems = latest.todoItems.map(i => (i.id === item.id ? updated : i))
+      const currentOrdered = computeDisplayOrder(updatedItems, latest.id)
+      const newOrdered = insertAtBoundary(currentOrdered, updated)
+      saveStoredOrder(latest.id, newOrdered.map(i => i.id))
+
+      emitUpdate({ ...latest, todoItems: updatedItems })
     } catch {
       // API layer throws on failure
     }
@@ -66,13 +76,13 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleDeleteItem = async (itemId: number) => {
     try {
-      const currentList = listRef.current
-      await deleteTodoItem(currentList.id, itemId)
-      removeItemFromOrder(currentList.id, itemId)
-      onUpdatedRef.current({
-        ...currentList,
-        todoItems: currentList.todoItems.filter(i => i.id !== itemId),
-      })
+      await deleteTodoItem(listRef.current.id, itemId)
+
+      const latest = listRef.current
+      const storedOrder = getStoredOrder(latest.id)
+      saveStoredOrder(latest.id, storedOrder.filter(id => id !== itemId))
+
+      emitUpdate({ ...latest, todoItems: latest.todoItems.filter(i => i.id !== itemId) })
     } catch {
       // API layer throws on failure
     }
@@ -80,10 +90,10 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleDeleteList = async () => {
     try {
-      const currentList = listRef.current
-      await deleteTodoList(currentList.id)
-      removeListOrder(currentList.id)
-      onDeletedRef.current(currentList.id)
+      const listId = listRef.current.id
+      await deleteTodoList(listId)
+      removeListOrder(listId)
+      onDeletedRef.current(listId)
     } catch {
       // API layer throws on failure
     }
