@@ -66,7 +66,10 @@ export default function ActionInput({
           className="flex-1 outline-none bg-transparent text-sm disabled:opacity-50"
         />
         <button
-          onClick={onSubmit}
+          onClick={() => {
+            onSubmit()
+            inputRef.current?.focus()
+          }}
           disabled={isDisabled}
           className="ml-2 flex-shrink-0 w-8 h-8 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >

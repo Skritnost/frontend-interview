@@ -17,7 +17,7 @@ import {
 } from '@dnd-kit/sortable'
 import type { TodoList, TodoItem } from '../types/api'
 import { createTodoList, updateTodoList } from '../api/todoLists'
-import { saveStoredOrder, computeDisplayOrder } from '../utils/itemOrder'
+import { saveStoredOrder, computeDisplayOrder, groupByStatus } from '../utils/itemOrder'
 import { useTodoListActions } from '../hooks/useTodoListActions'
 import ActionInput from './ActionInput'
 import ChecklistItem from './ChecklistItem'
@@ -120,6 +120,7 @@ export default function TodoListModal({
     onUpdated: updateCurrentList,
     onDeleted: (listId) => {
       onDeleted(listId)
+      setShowDeleteConfirm(false)
       onClose()
     },
   })
@@ -192,7 +193,8 @@ export default function TodoListModal({
 
     const oldIndex = orderedItems.findIndex(i => i.id === active.id)
     const newIndex = orderedItems.findIndex(i => i.id === over.id)
-    const newOrdered = arrayMove(orderedItems, oldIndex, newIndex)
+    const moved = arrayMove(orderedItems, oldIndex, newIndex)
+    const newOrdered = groupByStatus(moved)
 
     setOrderedItems(newOrdered)
     saveStoredOrder(currentList.id, newOrdered.map(i => i.id))
@@ -244,8 +246,6 @@ export default function TodoListModal({
               placeholder="Add your task..."
               label="Checklist Items"
               icon={<Plus className="w-4 h-4" />}
-              loading={actions.itemLoading}
-              refocusAfterLoading
             />
 
             {orderedItems.length > 0 && (

@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
+import { Check } from 'lucide-react'
 import { toast } from 'sonner'
 import type { TodoItem } from '../types/api'
 
 interface Props {
   item: TodoItem
   onToggle: () => void
-  onDelete: () => void
+  onDelete?: () => void
   onUpdateName?: (name: string) => Promise<void>
 }
 
@@ -77,7 +78,9 @@ export default function ChecklistItem({ item, onToggle, onDelete, onUpdateName }
         className="flex-shrink-0 cursor-pointer hover:opacity-70 transition-opacity"
       >
         {item.done ? (
-          <img src="/icons/icon_checked.svg" alt="Checked" className="w-5 h-5" />
+          <div className="w-5 h-5 rounded-full bg-black flex items-center justify-center">
+            <Check className="w-3 h-3 text-white" strokeWidth={3} />
+          </div>
         ) : (
           <div className="w-5 h-5 rounded-full border-2 border-black hover:border-gray-500 transition-colors" />
         )}
@@ -100,12 +103,14 @@ export default function ChecklistItem({ item, onToggle, onDelete, onUpdateName }
           {optimisticName ?? item.name}
         </span>
       )}
-      <button
-        onClick={onDelete}
-        className="flex-shrink-0 cursor-pointer hover:opacity-70 transition-opacity"
-      >
-        <img src="/icons/icon_delete.svg" alt="Delete" className="w-4 h-4" />
-      </button>
+      {onDelete && (
+        <button
+          onClick={onDelete}
+          className="flex-shrink-0 cursor-pointer hover:opacity-70 transition-opacity"
+        >
+          <img src="/icons/icon_delete.svg" alt="Delete" className="w-4 h-4" />
+        </button>
+      )}
     </>
   )
 }

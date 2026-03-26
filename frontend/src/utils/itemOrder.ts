@@ -27,20 +27,20 @@ export function removeListOrder(listId: number) {
   localStorage.removeItem(`${KEY_PREFIX}${listId}`)
 }
 
+/** Partition items: unchecked first, checked last, preserving relative order. */
+export function groupByStatus(items: TodoItem[]): TodoItem[] {
+  return [...items.filter(i => !i.done), ...items.filter(i => i.done)]
+}
+
 /**
  * Build display order from items + stored order.
  * - Items in stored order keep their stored position.
  * - Items not in stored order go to the top (newest first).
- * - If no stored order: unchecked first, then checked.
+ * - Always groups unchecked first, checked last.
  */
 export function computeDisplayOrder(items: TodoItem[], listId: number): TodoItem[] {
   const storedOrder = getStoredOrder(listId)
   const itemMap = new Map(items.map(i => [i.id, i]))
-
-  if (storedOrder.length === 0) {
-    const unique = [...itemMap.values()]
-    return [...unique.filter(i => !i.done), ...unique.filter(i => i.done)]
-  }
 
   const ordered: TodoItem[] = []
   const seen = new Set<number>()
@@ -55,7 +55,7 @@ export function computeDisplayOrder(items: TodoItem[], listId: number): TodoItem
   }
 
   const newItems = [...itemMap.values()].filter(i => !seen.has(i.id))
-  return [...newItems, ...ordered]
+  return groupByStatus([...newItems, ...ordered])
 }
 
 /**

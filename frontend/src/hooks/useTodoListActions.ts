@@ -40,21 +40,31 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
     const trimmed = itemName.trim()
     const listId = listRef.current.id
     if (!trimmed || !listId) return
-    setItemLoading(true)
+
+    // Optimistic: show item immediately with a temp id
+    const tempId = -Date.now()
+    const tempItem: TodoItem = { id: tempId, name: trimmed, done: false }
+
+    const latest = listRef.current
+    const storedOrder = getStoredOrder(latest.id)
+    saveStoredOrder(latest.id, [tempId, ...storedOrder])
+    emitUpdate({ ...latest, todoItems: [...latest.todoItems, tempItem] })
+    setItemName('')
+
     try {
       const item = await addTodoItem(listId, { name: trimmed })
 
-      const latest = listRef.current
-      const newItems = [...latest.todoItems, item]
-      const storedOrder = getStoredOrder(latest.id)
-      saveStoredOrder(latest.id, [item.id, ...storedOrder])
-
-      emitUpdate({ ...latest, todoItems: newItems })
-      setItemName('')
+      // Replace temp item with real item
+      const current = listRef.current
+      const currentOrder = getStoredOrder(current.id)
+      saveStoredOrder(current.id, currentOrder.map(id => id === tempId ? item.id : id))
+      emitUpdate({ ...current, todoItems: current.todoItems.map(i => i.id === tempId ? item : i) })
     } catch {
-      // API layer throws on failure
-    } finally {
-      setItemLoading(false)
+      // Revert on failure
+      const current = listRef.current
+      const currentOrder = getStoredOrder(current.id)
+      saveStoredOrder(current.id, currentOrder.filter(id => id !== tempId))
+      emitUpdate({ ...current, todoItems: current.todoItems.filter(i => i.id !== tempId) })
     }
   }
 

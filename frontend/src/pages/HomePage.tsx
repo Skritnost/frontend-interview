@@ -21,7 +21,7 @@ export default function HomePage() {
 
       <button
         onClick={() => navigate('/todo-lists')}
-        className="group px-8 py-3.5 bg-black text-white rounded-full text-base font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+        className="group px-8 py-3.5 bg-black text-white rounded-full text-base font-semibold cursor-pointer hover:bg-gray-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
       >
         Get Started
         <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

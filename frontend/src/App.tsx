@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="/todo-lists" element={<TodoListsPage />} />
+            <Route path="/todo-lists/:id?" element={<TodoListsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
