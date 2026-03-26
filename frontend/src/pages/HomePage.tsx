@@ -20,7 +20,7 @@ export default function HomePage() {
       </p>
 
       <button
-        onClick={() => navigate('/todo-list')}
+        onClick={() => navigate('/todo-lists')}
         className="group px-8 py-3.5 bg-black text-white rounded-full text-base font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
       >
         Get Started

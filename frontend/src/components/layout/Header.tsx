@@ -2,7 +2,7 @@ import { NavLink, Link } from 'react-router-dom'
 
 const navItems = [
   { to: '/', label: 'Home' },
-  { to: '/todo-list', label: 'Todo List' },
+  { to: '/todo-lists', label: 'Todo Lists' },
 ]
 
 export default function Header() {
