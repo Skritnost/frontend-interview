@@ -75,11 +75,11 @@ export default function TodoListsPage() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Todo Lists</h1>
+      <h1 className="text-3xl font-bold text-foreground mb-6">Todo Lists</h1>
 
       <div className="flex items-center gap-3 mb-8">
-        <div className="flex items-center border-2 border-black rounded-full px-4 py-2 w-80 min-w-0 focus-within:ring-2 focus-within:ring-black/20 transition-shadow mr-auto">
-          <Search className="w-4 h-4 text-gray-400" />
+        <div className="flex items-center border-2 border-border rounded-full px-4 py-2 w-80 min-w-0 focus-within:ring-2 focus-within:ring-primary/20 transition-shadow mr-auto">
+          <Search className="w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={search}
@@ -90,7 +90,7 @@ export default function TodoListsPage() {
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="flex-shrink-0 text-gray-400 hover:text-black transition-colors cursor-pointer"
+              className="flex-shrink-0 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -98,7 +98,7 @@ export default function TodoListsPage() {
         </div>
         <button
           onClick={openCreateModal}
-          className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 bg-black text-white rounded-full text-sm font-semibold cursor-pointer hover:bg-gray-800 transition-colors"
+          className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold cursor-pointer hover:bg-primary-hover transition-colors"
         >
           <Plus className="w-4 h-4" />
           New List
@@ -107,7 +107,7 @@ export default function TodoListsPage() {
 
       {listsLoaded && filteredLists.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-gray-400 text-lg">
+          <p className="text-muted-foreground text-lg">
             {lists.length === 0
               ? 'No todo lists yet. Create one to get started!'
               : 'No lists match your search.'}

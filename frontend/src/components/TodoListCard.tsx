@@ -28,14 +28,14 @@ export default function TodoListCard({ list, onDeleted, onUpdated, onEdit }: Pro
   const hasMore = orderedItems.length > MAX_VISIBLE_ITEMS
 
   return (
-    <div className="rounded-2xl border-2 border-black overflow-hidden">
-      <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
+    <div className="rounded-2xl border-2 border-border overflow-hidden bg-card">
+      <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between">
         <span className="text-lg font-bold flex-1 text-center">
           {list.name}
         </span>
         <button
           onClick={onEdit}
-          className="text-white hover:opacity-70 transition-opacity ml-2 cursor-pointer"
+          className="text-primary-foreground hover:opacity-70 transition-opacity ml-2 cursor-pointer"
           title="Edit list"
         >
           <Pencil className="w-4 h-4" />
@@ -54,12 +54,12 @@ export default function TodoListCard({ list, onDeleted, onUpdated, onEdit }: Pro
         </div>
 
         {orderedItems.length === 0 ? (
-          <p className="text-center text-gray-500 py-4">No tasks have been entered yet</p>
+          <p className="text-center text-muted py-4">No tasks have been entered yet</p>
         ) : (
           <>
             <ul className="space-y-1">
               {visibleItems.map(item => (
-                <li key={item.id} className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <li key={item.id} className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-hover transition-colors">
                   <ChecklistItem
                     item={item}
                     onToggle={() => handleToggleItem(item)}
@@ -71,7 +71,7 @@ export default function TodoListCard({ list, onDeleted, onUpdated, onEdit }: Pro
             {hasMore && (
               <button
                 onClick={onEdit}
-                className="mt-2 w-full text-center text-sm text-gray-500 hover:text-black transition-colors cursor-pointer py-1"
+                className="mt-2 w-full text-center text-sm text-muted hover:text-foreground transition-colors cursor-pointer py-1"
               >
                 See full checklist
               </button>

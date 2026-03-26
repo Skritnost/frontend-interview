@@ -60,14 +60,14 @@ function SortableChecklistItem({
     <li
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-gray-50 transition-colors ${isDragging ? 'opacity-40' : ''}`}
+      className={`flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-hover transition-colors ${isDragging ? 'opacity-40' : ''}`}
     >
       <button
         {...attributes}
         {...listeners}
         className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none outline-none"
       >
-        <GripVertical className="w-4 h-4 text-gray-300" />
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
       </button>
       <ChecklistItem item={item} onToggle={onToggle} onDelete={onDelete} onUpdateName={onUpdateName} />
     </li>
@@ -210,7 +210,7 @@ export default function TodoListModal({
           currentList ? (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+              className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
               title="Delete list"
             >
               <Trash2 className="w-5 h-5" />
@@ -260,7 +260,7 @@ export default function TodoListModal({
                   items={orderedItems.map(i => i.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <ul className="mt-4 space-y-1 max-h-60 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent">
+                  <ul className="mt-4 space-y-1 max-h-60 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground [&::-webkit-scrollbar-track]:bg-transparent">
                     {orderedItems.map(item => (
                       <SortableChecklistItem
                         key={item.id}
@@ -282,7 +282,7 @@ export default function TodoListModal({
           <button
             onClick={onClose}
             disabled={!currentList}
-            className="px-6 py-2 bg-black text-white rounded-full font-semibold cursor-pointer hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-full font-semibold cursor-pointer hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Done
           </button>
@@ -294,20 +294,20 @@ export default function TodoListModal({
         onClose={() => setShowDeleteConfirm(false)}
         title="Delete List"
       >
-        <p className="text-gray-600 mb-6">
+        <p className="text-muted mb-6">
           Are you sure you want to delete{' '}
           <strong>{currentList?.name}</strong>? This action cannot be undone.
         </p>
         <div className="flex justify-end gap-3">
           <button
             onClick={() => setShowDeleteConfirm(false)}
-            className="px-5 py-2 rounded-full border-2 border-black font-semibold cursor-pointer hover:bg-gray-100 transition-colors"
+            className="px-5 py-2 rounded-full border-2 border-border font-semibold cursor-pointer hover:bg-hover transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={actions.handleDeleteList}
-            className="px-5 py-2 bg-red-600 text-white rounded-full font-semibold cursor-pointer hover:bg-red-700 transition-colors"
+            className="px-5 py-2 bg-destructive text-white rounded-full font-semibold cursor-pointer hover:bg-destructive-hover transition-colors"
           >
             Delete
           </button>

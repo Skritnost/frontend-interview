@@ -1,10 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { useTheme } from './context/ThemeContext'
 import Layout from './components/layout/Layout'
 import HomePage from './pages/HomePage'
 import TodoListsPage from './pages/TodoListsPage'
 
 function App() {
+  const { theme } = useTheme()
+
   return (
     <>
       <BrowserRouter>
@@ -16,7 +19,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" theme={theme} />
     </>
   )
 }

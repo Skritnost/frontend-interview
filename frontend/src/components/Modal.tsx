@@ -24,8 +24,8 @@ export default function Modal({ open, onClose, title, titleAction, children }: M
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50 cursor-pointer" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+      <div className="absolute inset-0 bg-overlay cursor-pointer" onClick={onClose} />
+      <div className="relative bg-card text-foreground rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {title && <h2 className="text-xl font-bold">{title}</h2>}
@@ -33,7 +33,7 @@ export default function Modal({ open, onClose, title, titleAction, children }: M
           </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-black transition-colors cursor-pointer"
+            className="text-muted hover:text-foreground transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

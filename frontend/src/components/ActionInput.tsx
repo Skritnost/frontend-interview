@@ -43,12 +43,12 @@ export default function ActionInput({
   return (
     <div>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">
+        <label className="block text-sm font-medium text-foreground/80 mb-1.5 ml-1">
           {label}
         </label>
       )}
       <div
-        className="flex items-center border-2 border-black rounded-full pl-4 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-black/20 transition-shadow"
+        className="flex items-center border-2 border-border rounded-full pl-4 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-primary/20 transition-shadow"
         onBlur={(e) => {
           if (onBlur && !e.currentTarget.contains(e.relatedTarget as Node)) {
             onBlur()
@@ -71,7 +71,7 @@ export default function ActionInput({
             inputRef.current?.focus()
           }}
           disabled={isDisabled}
-          className="ml-2 flex-shrink-0 w-8 h-8 rounded-full bg-black text-white flex items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="ml-2 flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center cursor-pointer hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
             <LoaderCircle className="w-4 h-4 animate-spin" />
@@ -80,7 +80,7 @@ export default function ActionInput({
           )}
         </button>
       </div>
-      {error && <p className="text-red-500 text-sm mt-1 ml-4">{error}</p>}
+      {error && <p className="text-destructive text-sm mt-1 ml-4">{error}</p>}
     </div>
   )
 }

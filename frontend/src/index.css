@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --c-background: #f3f4f6;
+  --c-foreground: #111827;
+  --c-card: #ffffff;
+  --c-primary: #000000;
+  --c-primary-foreground: #ffffff;
+  --c-primary-hover: #1f2937;
+  --c-muted: #6b7280;
+  --c-muted-foreground: #9ca3af;
+  --c-border: #000000;
+  --c-hover: #f9fafb;
+  --c-destructive: #dc2626;
+  --c-destructive-hover: #b91c1c;
+  --c-overlay: rgba(0, 0, 0, 0.5);
+  --c-header: rgba(0, 0, 0, 0.95);
+  --c-header-foreground: #ffffff;
+  --c-header-border: rgba(255, 255, 255, 0.1);
+  --c-header-muted: #9ca3af;
+}
+
+.dark {
+  color-scheme: dark;
+  --c-background: #09090b;          /* zinc-950 */
+  --c-foreground: #fafafa;          /* zinc-50  — 19.4:1 on bg */
+  --c-card: #18181b;                /* zinc-900 — clearly lifted from bg */
+  --c-primary: #fafafa;             /* zinc-50  — crisp white buttons/headers */
+  --c-primary-foreground: #18181b;  /* zinc-900 */
+  --c-primary-hover: #d4d4d8;      /* zinc-300 */
+  --c-muted: #a1a1aa;              /* zinc-400 — 7.3:1 on bg, 6.4:1 on card */
+  --c-muted-foreground: #71717a;   /* zinc-500 — 4.6:1 on bg (AA) */
+  --c-border: #3f3f46;             /* zinc-700 — visible, not harsh */
+  --c-hover: #27272a;              /* zinc-800 */
+  --c-destructive: #ef4444;        /* red-500 */
+  --c-destructive-hover: #dc2626;  /* red-600 */
+  --c-overlay: rgba(0, 0, 0, 0.8);
+  --c-header: rgba(9, 9, 11, 0.95);  /* zinc-950 */
+  --c-header-foreground: #fafafa;     /* zinc-50 */
+  --c-header-border: rgba(63, 63, 70, 0.5); /* zinc-700/50 */
+  --c-header-muted: #a1a1aa;         /* zinc-400 — 7.3:1 */
+}
+
+@theme {
+  --color-background: var(--c-background);
+  --color-foreground: var(--c-foreground);
+  --color-card: var(--c-card);
+  --color-primary: var(--c-primary);
+  --color-primary-foreground: var(--c-primary-foreground);
+  --color-primary-hover: var(--c-primary-hover);
+  --color-muted: var(--c-muted);
+  --color-muted-foreground: var(--c-muted-foreground);
+  --color-border: var(--c-border);
+  --color-hover: var(--c-hover);
+  --color-destructive: var(--c-destructive);
+  --color-destructive-hover: var(--c-destructive-hover);
+  --color-overlay: var(--c-overlay);
+  --color-header: var(--c-header);
+  --color-header-foreground: var(--c-header-foreground);
+  --color-header-border: var(--c-header-border);
+  --color-header-muted: var(--c-header-muted);
+}
+
+html {
+  background-color: var(--c-background);
+  color: var(--c-foreground);
+}
