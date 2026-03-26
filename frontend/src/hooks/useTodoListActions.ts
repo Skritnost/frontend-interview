@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { TodoList, TodoItem } from '../types/api'
 import { addTodoItem, updateTodoItem, deleteTodoItem, deleteTodoList } from '../api/todoLists'
 import {
@@ -20,6 +20,13 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
   const [itemName, setItemName] = useState('')
   const [itemLoading, setItemLoading] = useState(false)
 
+  const listRef = useRef(list)
+  listRef.current = list
+  const onUpdatedRef = useRef(onUpdated)
+  onUpdatedRef.current = onUpdated
+  const onDeletedRef = useRef(onDeleted)
+  onDeletedRef.current = onDeleted
+
   const resetItemInput = () => {
     setItemName('')
     setItemLoading(false)
@@ -27,13 +34,14 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleAddItem = async () => {
     const trimmed = itemName.trim()
-    if (!trimmed || !list.id) return
+    if (!trimmed || !listRef.current.id) return
     setItemLoading(true)
     try {
-      const item = await addTodoItem(list.id, { name: trimmed })
-      const storedOrder = getStoredOrder(list.id)
-      saveStoredOrder(list.id, [item.id, ...storedOrder])
-      onUpdated({ ...list, todoItems: [...list.todoItems, item] })
+      const currentList = listRef.current
+      const item = await addTodoItem(currentList.id, { name: trimmed })
+      const storedOrder = getStoredOrder(currentList.id)
+      saveStoredOrder(currentList.id, [item.id, ...storedOrder])
+      onUpdatedRef.current({ ...currentList, todoItems: [...currentList.todoItems, item] })
       setItemName('')
     } catch {
       // API layer throws on failure
@@ -44,12 +52,13 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleToggleItem = async (item: TodoItem) => {
     try {
-      const updated = await updateTodoItem(list.id, item.id, { done: !item.done })
-      const updatedItems = list.todoItems.map(i => (i.id === item.id ? updated : i))
-      const currentOrdered = computeDisplayOrder(updatedItems, list.id)
+      const currentList = listRef.current
+      const updated = await updateTodoItem(currentList.id, item.id, { done: !item.done })
+      const updatedItems = currentList.todoItems.map(i => (i.id === item.id ? updated : i))
+      const currentOrdered = computeDisplayOrder(updatedItems, currentList.id)
       const newOrdered = reorderOnToggle(currentOrdered, updated)
-      saveStoredOrder(list.id, newOrdered.map(i => i.id))
-      onUpdated({ ...list, todoItems: updatedItems })
+      saveStoredOrder(currentList.id, newOrdered.map(i => i.id))
+      onUpdatedRef.current({ ...currentList, todoItems: updatedItems })
     } catch {
       // API layer throws on failure
     }
@@ -57,11 +66,12 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleDeleteItem = async (itemId: number) => {
     try {
-      await deleteTodoItem(list.id, itemId)
-      removeItemFromOrder(list.id, itemId)
-      onUpdated({
-        ...list,
-        todoItems: list.todoItems.filter(i => i.id !== itemId),
+      const currentList = listRef.current
+      await deleteTodoItem(currentList.id, itemId)
+      removeItemFromOrder(currentList.id, itemId)
+      onUpdatedRef.current({
+        ...currentList,
+        todoItems: currentList.todoItems.filter(i => i.id !== itemId),
       })
     } catch {
       // API layer throws on failure
@@ -70,9 +80,10 @@ export function useTodoListActions({ list, onUpdated, onDeleted }: Options) {
 
   const handleDeleteList = async () => {
     try {
-      await deleteTodoList(list.id)
-      removeListOrder(list.id)
-      onDeleted(list.id)
+      const currentList = listRef.current
+      await deleteTodoList(currentList.id)
+      removeListOrder(currentList.id)
+      onDeletedRef.current(currentList.id)
     } catch {
       // API layer throws on failure
     }
