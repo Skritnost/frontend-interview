@@ -1,44 +1,78 @@
 
 # frontend-interview
 
-This repository contains a simple Todo List API built with NestJS and TypeScript, along with a React Vite project scaffold.
+A full-stack Todo List application built with **NestJS** (backend) and **React 19 + Vite** (frontend).
 
 ## Project Structure
 
 ```plaintext
 .
-├── backend/        # NestJS-based Todo List API
-└── frontend/       # React Vite scaffold for the Todo List UI
+├── backend/           # NestJS API — Todo List CRUD operations
+├── frontend/          # React 19 + Vite + TailwindCSS — Todo List UI
+└── .devcontainer/     # Dev container configuration for VS Code
 ```
 
-### Backend
+## Getting Started
 
-The backend API is responsible for handling the Todo List's CRUD operations and is already running. Candidates can use the provided endpoints to manage their Todo List data in the frontend application.
+### Option 1: Dev Container (recommended)
 
-- **API Documentation**: Available at `http://localhost:4000/api/docs`
+This is the easiest way to get everything running with zero local setup.
 
-### Frontend
+1. Install [VS Code](https://code.visualstudio.com/) and the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
+2. Open this repository in VS Code.
+3. When prompted, click **"Reopen in Container"** — or run `Cmd+Shift+P` → `Dev Containers: Reopen in Container`.
+4. Wait for the container to build. Dependencies install automatically, and the frontend dev server starts on its own.
 
-The frontend is a simple React application using Vite as the build tool. Candidates are expected to build a Todo List UI by consuming the provided API. The scaffold includes basic setup and configurations to get started quickly.
+Once ready:
 
-### Installation
+| Service  | URL                          |
+|----------|------------------------------|
+| Frontend | http://localhost:5173        |
+| Backend  | http://localhost:4000        |
+| API Docs | http://localhost:4000/api/docs |
 
-This project provides a development environment using **devContainers**. Open the repository in a devContainer using your preferred IDE (e.g., VS Code). The devContainer will have all dependencies pre-installed.
+### Option 2: Local Development
 
-## Running the app
+Requires [Node.js](https://nodejs.org/) installed on your machine.
+
+**Start the backend:**
 
 ```bash
-# development
-$ npm run dev
+cd backend
+npm install
+npm run start:dev
 ```
 
-## Contact
+**Start the frontend** (in a separate terminal):
 
-- Martín Fernández (mfernandez@crunchloop.io)
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## About Crunchloop
+The frontend proxies `/api` requests to the backend automatically.
 
-![crunchloop](https://s3.amazonaws.com/crunchloop.io/logo-blue.png)
+## Testing
 
-We strongly believe in giving back :rocket:. Let's work together [`Get in touch`](https://crunchloop.io/#contact).
+### Frontend (Vitest + React Testing Library)
+
+```bash
+cd frontend
+npm run test          # watch mode
+npm run test:run      # single run
+```
+
+### Backend (Jest + Supertest)
+
+```bash
+cd backend
+npm run test          # unit tests (watch mode)
+npm run test:cov      # unit tests with coverage
+npm run test:e2e      # end-to-end tests
+```
+
+## API Documentation
+
+The backend exposes auto-generated Swagger documentation at [http://localhost:4000/api/docs](http://localhost:4000/api/docs) once the server is running.
 

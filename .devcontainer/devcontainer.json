@@ -1,11 +1,26 @@
 {
   "name": "CoplineHQ:frontend",
   "service": "frontend",
-  "runServices": ["frontend"],
+  "runServices": ["frontend", "backend"],
   "dockerComposeFile": "../docker-compose.yml",
   "workspaceFolder": "/workspaces/frontend",
   "postCreateCommand": ["bash", "../.devcontainer/postCreate.sh"],
+  "postStartCommand": "nohup bash -c 'npm run dev &'",
+  "forwardPorts": [5173, "backend:4000"],
+  "portsAttributes": {
+    "5173": { "label": "Vite Dev Server" },
+    "backend:4000": { "label": "Backend API" }
+  },
   "features": {
-      "ghcr.io/devcontainers/features/node:1" : {}
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
   }
 }

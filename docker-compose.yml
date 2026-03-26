@@ -12,5 +12,8 @@ services:
     volumes:
       - .:/workspaces:cached
 
+    environment:
+      - VITE_BACKEND_URL=http://backend:4000
+
     depends_on:
       - backend
